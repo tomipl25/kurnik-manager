@@ -1,0 +1,1876 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Kurnik Manager PRO v5</title>
+  <style>
+    :root{
+      --primary:#10b981;
+      --primary-2:#059669;
+      --bg-main:#f8fafc;
+      --bg-card:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --shadow: 0 10px 30px rgba(2,6,23,.08);
+      --shadow-soft: 0 6px 18px rgba(2,6,23,.06);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg-main);
+      color: var(--text);
+    }
+    .app{min-height:100dvh; padding-bottom:86px;}
+    .top{
+      background: linear-gradient(135deg, var(--primary), #22c55e);
+      color:#fff;
+      padding: 18px 16px 22px;
+      position: sticky;
+      top:0;
+      z-index:5;
+      box-shadow: 0 10px 24px rgba(2,6,23,.10);
+    }
+    .top .wrap{
+      max-width: 980px;
+      margin:0 auto;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+    }
+    .brand{display:flex; gap:10px; align-items:center}
+    .logo{font-size:28px; line-height:1}
+    h1{margin:0; font-size:22px; letter-spacing:.2px}
+    .sub{opacity:.9; font-size:13px; margin-top:2px}
+    .pills{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    .pill{
+      background: rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.22);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:13px;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      backdrop-filter: blur(10px);
+    }
+    .pill .k{opacity:.85; font-weight:600}
+    .pill .v{font-size:14px}
+    main{max-width: 980px; margin: 14px auto 0; padding: 0 12px 24px;}
+    .page{display:none}
+    .page.active{display:block}
+    .card{
+      background: var(--bg-card);
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+      overflow:hidden;
+    }
+    .card + .card{margin-top:12px}
+    .hd{
+      padding:14px 14px 10px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(248,250,252,.8), rgba(248,250,252,0));
+    }
+    .hd h2{margin:0; font-size:18px}
+    .badge{
+      font-size:12px;
+      color: var(--muted);
+      border:1px solid var(--border);
+      background:#fff;
+      padding:6px 10px;
+      border-radius:999px;
+      white-space:nowrap;
+    }
+    .bd{padding:14px}
+    .kpis{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
+    }
+    @media (min-width:860px){
+      .kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+    }
+    .kpi{
+      border-radius: 16px;
+      border:1px solid var(--border);
+      padding:14px;
+      box-shadow: 0 10px 24px rgba(2,6,23,.05);
+      color:#fff;
+      overflow:hidden;
+      min-height: 108px;
+    }
+    .kpi .t{opacity:.95; font-size:13px}
+    .kpi .v{font-size:34px; font-weight:800; margin-top:6px; letter-spacing:.3px}
+    .kpi .h{opacity:.92; font-size:12px; margin-top:2px}
+    .kpi.green{background: linear-gradient(135deg, #10b981, #059669)}
+    .kpi.blue{background: linear-gradient(135deg, #3b82f6, #2563eb)}
+    .kpi.orange{background: linear-gradient(135deg, #f59e0b, #d97706)}
+    .kpi.gray{background: linear-gradient(135deg, #64748b, #475569)}
+    .kpi.red{background: linear-gradient(135deg, #ef4444, #b91c1c)}
+
+    .grid2{display:grid; grid-template-columns:1fr; gap:12px}
+    @media (min-width:760px){ .grid2{grid-template-columns: 1.1fr .9fr} }
+
+    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px}
+    .field{
+      display:flex; align-items:center; gap:10px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:10px 10px;
+    }
+    .field input, .field select{
+      width:100%;
+      border:0; outline:0;
+      font-size:16px;
+      background:transparent;
+      color:var(--text);
+    }
+    .stepper{display:flex; gap:6px}
+    .stepper button{
+      width:42px; height:42px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:#f8fafc;
+      font-size:18px;
+      cursor:pointer;
+    }
+    .btnrow{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .btn{
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:14px;
+      padding:12px 14px;
+      font-weight:800;
+      cursor:pointer;
+      flex:1 1 160px;
+    }
+    .btn.primary{background: var(--primary); border-color: var(--primary); color:#fff}
+    .btn.primary:hover{background: var(--primary-2)}
+    .btn.ghost{background:#fff}
+    .btn.danger{background:#ef4444; border-color:#ef4444; color:#fff}
+    .hint{margin:10px 2px 0; font-size:12px; color:var(--muted); line-height:1.35}
+
+    .tablewrap{overflow:auto}
+    table{width:100%; border-collapse:separate; border-spacing:0; font-size:14px}
+    thead th{
+      text-align:left;
+      font-size:12px;
+      color:var(--muted);
+      padding:10px;
+      background:#f8fafc;
+      border-bottom:1px solid var(--border);
+      position:sticky; top:0;
+    }
+    tbody td{
+      padding:10px;
+      border-bottom:1px solid var(--border);
+      background:#fff;
+      vertical-align:top;
+    }
+    .actions{display:flex; gap:8px; flex-wrap:wrap}
+    .chipbtn{
+      border:1px solid var(--border);
+      background:#fff;
+      padding:8px 10px;
+      border-radius:999px;
+      font-weight:700;
+      cursor:pointer;
+      font-size:12px;
+    }
+
+    .seg{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      padding:6px;
+      border-radius:16px;
+      background:#f1f5f9;
+      border:1px solid var(--border);
+      margin:10px 0 12px;
+    }
+    .seg button{
+      border:1px solid transparent;
+      background:transparent;
+      border-radius:12px;
+      padding:10px 8px;
+      font-weight:800;
+      cursor:pointer;
+      color: var(--muted);
+    }
+    .seg button.active{
+      background: var(--primary);
+      border-color: var(--primary);
+      color:#fff;
+      box-shadow: 0 8px 18px rgba(16,185,129,.22);
+    }
+
+    .nav{
+      position: fixed;
+      left:0; right:0; bottom:0;
+      background: rgba(255,255,255,.92);
+      border-top:1px solid var(--border);
+      backdrop-filter: blur(12px);
+      padding: 10px 8px calc(10px + env(safe-area-inset-bottom));
+      display:flex;
+      justify-content:space-around;
+      z-index:10;
+    }
+    .nav button{
+      appearance:none; -webkit-appearance:none;
+      border:0; background:transparent;
+      cursor:pointer;
+      display:flex; flex-direction:column; align-items:center;
+      gap:6px;
+      min-width:72px;
+      color: var(--muted);
+      font-weight:700;
+      padding:8px 10px;
+      border-radius:14px;
+    }
+    .nav button .ic{font-size:20px; line-height:1}
+    .nav button.active{color: var(--primary); background: rgba(16,185,129,.10)}
+    @media (min-width: 980px){
+      .nav{
+        left:50%;
+        transform: translateX(-50%);
+        width: min(980px, calc(100vw - 24px));
+        border:1px solid var(--border);
+        border-bottom:0;
+        border-radius:16px 16px 0 0;
+      }
+    }
+
+    .toast{
+      position: fixed;
+      left:50%;
+      transform: translateX(-50%);
+      bottom: 96px;
+      background: rgba(2,6,23,.88);
+      color:#fff;
+      padding:10px 12px;
+      border-radius:14px;
+      font-size:13px;
+      box-shadow: var(--shadow);
+      display:none;
+      max-width: min(520px, calc(100vw - 24px));
+      z-index:20;
+    }
+    .toast.show{display:block}
+    .toast b{display:block; margin-bottom:2px}
+
+    /* ===== Responsywność: poprawki mobile-first ===== */
+    :root{ --nav-h:76px; }
+    .app{ padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom)); }
+
+    /* Lepsze zachowanie flexów (żeby nic nie wypychało poza ekran) */
+    .top .wrap, .brand, .pills, .field, .btnrow, .actions{ min-width:0; }
+    .field input, .field select{ min-width:0; }
+
+    /* Nagłówek: na małych ekranach układ w kolumnie */
+    @media (max-width: 640px){
+      .top{ padding: 14px 12px 16px; }
+      .top .wrap{ flex-direction:column; align-items:stretch; }
+      .pills{ justify-content:flex-start; }
+      .pill{ flex: 1 1 160px; }
+      h1{ font-size:20px; }
+      .sub{ font-size:12px; }
+      main{ padding: 0 10px 18px; }
+      .bd{ padding: 12px; }
+      .hd{ padding: 12px 12px 10px; }
+    }
+
+    /* KPI: mniejsze liczby na wąskich ekranach */
+    .kpi .v{ font-size: clamp(24px, 7.2vw, 34px); }
+    @media (max-width: 380px){
+      .kpis{ grid-template-columns: 1fr; }
+      .kpi{ min-height: 96px; }
+    }
+
+    /* Pola: pozwól łamać wiersz, żeby select + date nie rozjeżdżały */
+    @media (max-width: 420px){
+      .field{ flex-wrap:wrap; }
+      .stepper{ width:100%; justify-content:flex-end; }
+      .stepper button{ width:44px; height:44px; }
+      /* nadpisanie inline min-width dla date */
+      .field > div[style*="min-width:160px"]{ min-width:0 !important; width:100%; }
+    }
+
+    /* Tabele: płynne przewijanie + mniejsze odstępy */
+    .tablewrap{ -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+    @media (max-width: 520px){
+      table{ font-size:13px; }
+      thead th{ padding:8px; }
+      tbody td{ padding:8px; }
+      .chipbtn{ padding:8px 10px; }
+    }
+
+    /* Ukrywanie najmniej ważnych kolumn na mobile (żeby nie było „mikroskopu”) */
+    @media (max-width: 520px){
+      /* Ostatnie 7 wpisów: chowamy Notatkę */
+      #page-dashboard table thead th:nth-child(6),
+      #page-dashboard table tbody td:nth-child(6){
+        display:none;
+      }
+
+      /* Historia wpisów: chowamy „Cena” i „Notatka” */
+      #page-history table thead th:nth-child(5),
+      #page-history table tbody td:nth-child(5),
+      #page-history table thead th:nth-child(7),
+      #page-history table tbody td:nth-child(7){
+        display:none;
+      }
+
+      /* Koszty: chowamy Notatkę */
+      #page-costs table thead th:nth-child(4),
+      #page-costs table tbody td:nth-child(4){
+        display:none;
+      }
+
+      /* Kaucja: w historii chowamy PLN (zostaje akcja + ilość) */
+      #page-deposits table thead th:nth-child(5),
+      #page-deposits table tbody td:nth-child(5){
+        display:none;
+      }
+
+      .actions{ gap:6px; }
+      .actions .chipbtn{ flex:1 1 120px; }
+    }
+
+    /* Dolna nawigacja: bardziej „mobile friendly” (bez wypychania) */
+    .nav{ min-height: var(--nav-h); }
+    .nav button{ min-width:0; flex:1 1 0; }
+    @media (max-width: 420px){
+      .nav{ padding: 8px 6px calc(8px + env(safe-area-inset-bottom)); }
+      .nav button{ padding:8px 6px; gap:4px; font-size:11px; }
+      .nav button .ic{ font-size:18px; }
+    }
+
+    /* Modal: nie wyjeżdża poza ekran, można scrollować */
+    .modal-content{
+      width: min(520px, calc(100vw - 24px));
+      max-height: calc(100dvh - 24px);
+      overflow:auto;
+    }
+
+    /* Drobna poprawka dostępności: widoczny focus */
+    :focus-visible{ outline: 2px solid rgba(16,185,129,.55); outline-offset: 2px; border-radius: 12px; }
+
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo">🐔</div>
+        <div>
+          <h1>Kurnik Manager PRO <span style="opacity:.85">v5</span></h1>
+          <div class="sub">Zbiór jaj, sprzedaż, historia, raporty. Działa offline (localStorage).</div>
+        </div>
+      </div>
+      <div class="pills">
+        <div class="pill"><span class="k">Dzisiaj</span><span class="v" id="pillToday">0 jaj</span></div>
+        <div class="pill"><span class="k">Stan</span><span class="v" id="pillStock">0 jaj</span></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page active" id="page-dashboard">
+      <div class="card">
+        <div class="hd">
+          <h2>🏠 Pulpit</h2>
+          <span class="badge" id="dashBadge">—</span>
+        </div>
+        <div class="bd">
+          <div class="kpis">
+            <div class="kpi green"><div class="t">Stan magazynu</div><div class="v" id="kpiStock">0</div><div class="h">jaj</div></div>
+            <div class="kpi blue"><div class="t">Dzisiaj zebrano</div><div class="v" id="kpiTodayCollected">0</div><div class="h">szt.</div></div>
+            <div class="kpi orange"><div class="t">Dzisiaj sprzedano</div><div class="v" id="kpiTodaySold">0</div><div class="h">szt.</div></div>
+            <div class="kpi gray"><div class="t">Przychód dziś</div><div class="v"><span id="kpiTodayRevenue">0.00</span></div><div class="h">PLN</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <div class="hd">
+            <h2>🎯 Szybki wpis</h2>
+            <span class="badge" id="entryBadge">—</span>
+          </div>
+          <div class="bd">
+            <label>Data</label>
+            <div class="field">
+              <select id="dDateSelect">
+                <option value="today">Dzisiaj</option>
+                <option value="yesterday">Wczoraj</option>
+                <option value="custom">Wybierz…</option>
+              </select>
+              <div style="min-width:160px"><input id="dDate" type="date" /></div>
+            </div>
+
+            <label>Zebrane (szt.)</label>
+            <div class="field">
+              <input id="dCollected" type="number" min="0" step="1" inputmode="numeric" placeholder="np. 34" />
+              <div class="stepper">
+                <button type="button" id="colMinus">−</button>
+                <button type="button" id="colPlus">+</button>
+              </div>
+            </div>
+
+            
+            <label>Uszkodzone (szt.)</label>
+            <div class="field">
+              <input id="dDamaged" type="number" min="0" step="1" inputmode="numeric" placeholder="np. 2" />
+              <div class="stepper">
+                <button type="button" id="damMinus">−</button>
+                <button type="button" id="damPlus">+</button>
+              </div>
+            </div>
+
+<label>Sprzedane (szt.)</label>
+            <div class="field">
+              <input id="dSold" type="number" min="0" step="1" inputmode="numeric" placeholder="np. 10" />
+              <div class="stepper">
+                <button type="button" id="soldMinus">−</button>
+                <button type="button" id="soldPlus">+</button>
+              </div>
+            </div>
+<label>Cena / szt. (PLN) (opcjonalnie)</label>
+            <div class="field"><input id="dPrice" type="number" min="0" step="0.01" inputmode="decimal" placeholder="np. 1.50" /></div>
+
+            <label>Notatka (opcjonalnie)</label>
+            <div class="field"><input id="dNote" type="text" placeholder="np. targ / sąsiad / hurt" /></div>
+
+            <div class="btnrow">
+              <button class="btn primary" id="btnAddEntry">Zapisz wpis ✅</button>
+              <button class="btn ghost" id="btnClear">Wyczyść</button>
+              <button class="btn danger" id="btnUndo">Cofnij ostatni</button>
+            </div>
+
+            <p class="hint">Możesz wpisać tylko zbiór, tylko sprzedaż albo oba naraz. Cena jest opcjonalna.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="hd"><h2>🧾 Ostatnie 7 wpisów</h2><span class="badge" id="lastBadge">—</span></div>
+          <div class="bd">
+            <div class="tablewrap">
+              <table>
+                <thead><tr><th style="width:120px">Data</th><th style="width:80px">Zebr.</th><th style="width:80px">Uszk.</th><th style="width:80px">Sprz.</th><th style="width:110px">PLN</th><th>Notatka</th></tr></thead>
+                <tbody id="lastTbody"><tr><td class="muted" colspan="6">Brak wpisów.</td></tr></tbody>
+              </table>
+            </div>
+            <p class="hint">Pełna lista w zakładce „Historia”.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-history">
+      <div class="card">
+        <div class="hd"><h2>🧾 Historia</h2><span class="badge" id="histBadge">—</span></div>
+        <div class="bd">
+          <label>Filtr (data lub tekst w notatce)</label>
+          <div class="field"><input id="histFilter" type="text" placeholder="np. 2026-01 lub targ" /></div>
+
+          <div class="btnrow">
+            <button class="btn ghost" id="btnExport">Eksport JSON</button>
+            <button class="btn ghost" id="btnImport">Import JSON</button>
+            <button class="btn danger" id="btnClearAll">Wyczyść wszystko</button>
+          </div>
+
+          <div class="tablewrap" style="margin-top:10px">
+            <table>
+              <thead><tr><th style="width:120px">Data</th><th style="width:80px">Zebr.</th><th style="width:80px">Uszk.</th><th style="width:80px">Sprz.</th><th style="width:110px">Cena</th><th style="width:110px">PLN</th><th>Notatka</th><th style="width:190px">Akcje</th></tr></thead>
+              <tbody id="histTbody"><tr><td class="muted" colspan="8">Brak wpisów.</td></tr></tbody>
+            </table>
+          </div>
+
+          <div class="btnrow" style="margin-top:10px">
+            <button class="btn ghost" id="prevPage">◀</button>
+            <div class="btn" style="flex:2 1 220px; cursor:default; text-align:center" id="pageInfo">Strona 1</div>
+            <button class="btn ghost" id="nextPage">▶</button>
+          </div>
+
+          <input id="fileImport" type="file" accept="application/json" style="display:none" />
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-reports">
+      <div class="card">
+        <div class="hd"><h2>📊 Raporty</h2><span class="badge" id="repRangeBadge">—</span></div>
+        <div class="bd">
+          <div class="seg" id="repTabs">
+            <button class="active" data-tab="week">Tydzień</button>
+            <button data-tab="month">Miesiąc</button>
+            <button data-tab="custom">Zakres</button>
+          </div>
+          <div class="muted" id="repLabel">Ostatnie 7 dni (włącznie z dzisiaj).</div>
+
+          <div id="rep-custom" style="display:none; margin-top:10px">
+            <label>Od</label>
+            <div class="field"><input id="rFrom" type="date" /></div>
+            <label>Do</label>
+            <div class="field"><input id="rTo" type="date" /></div>
+            <div class="btnrow"><button class="btn primary" id="btnApplyRange">Zastosuj</button></div>
+          </div>
+
+          <div class="kpis" style="margin-top:12px">
+            <div class="kpi green"><div class="t">Zebrane</div><div class="v" id="repCollected">0</div><div class="h">szt.</div></div>
+            <div class="kpi blue"><div class="t">Sprzedane</div><div class="v" id="repSold">0</div><div class="h">szt.</div></div>
+            <div class="kpi orange"><div class="t">Przychód</div><div class="v"><span id="repRevenue">0.00</span></div><div class="h">PLN</div></div>
+            <div class="kpi gray"><div class="t">Bilans magazynu</div><div class="v" id="repStock">0</div><div class="h">stan na dziś</div></div>
+          </div>
+
+          
+          <div class="kpis" style="margin-top:12px">
+            <div class="kpi gray">
+              <div class="t">Koszty</div>
+              <div class="v"><span id="repCosts">0.00</span></div>
+              <div class="h">PLN</div>
+            </div>
+            <div class="kpi orange">
+              <div class="t">Zysk (Przychód − Koszty)</div>
+              <div class="v"><span id="repProfit">0.00</span></div>
+              <div class="h">PLN</div>
+            </div>
+          </div>
+
+
+          <div class="kpis" style="margin-top:12px">
+            <div class="kpi gray">
+              <div class="t">📦 Pojemniki w obiegu</div>
+              <div class="v"><span id="repDepBoxes">0</span></div>
+              <div class="h">szt</div>
+            </div>
+            <div class="kpi orange">
+              <div class="t">💰 Kaucja u klientów</div>
+              <div class="v"><span id="repDepMoney">0.00</span></div>
+              <div class="h">PLN</div>
+            </div>
+            <div class="kpi red">
+              <div class="t">🟥 Zaległe (warn+)</div>
+              <div class="v"><span id="repDepOverdue">0</span></div>
+              <div class="h">klientów</div>
+            </div>
+          </div>
+<div class="card" style="margin-top:12px">
+            <div class="hd"><h2 style="font-size:16px">🧠 Jak liczymy stan?</h2><span class="badge">info</span></div>
+            <div class="bd"><div class="muted">Stan = stan początkowy + suma(zebrane) − suma(sprzedane) − suma(uszkodzone).</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="page" id="page-deposits">
+      <div class="card">
+        <div class="hd">
+          <h2>📦 Pojemniki / Kaucja</h2>
+          <span class="badge" id="depBadge">—</span>
+        </div>
+        <div class="bd">
+          <div class="grid2">
+            <div>
+              <div class="card" style="box-shadow:none;border:0;background:transparent">
+                <div class="hd" style="border:0;background:transparent;padding:0 0 10px">
+                  <h2 style="font-size:16px">⚡ Szybka akcja</h2>
+                  <span class="badge" id="depQuickBadge">—</span>
+                </div>
+                <div class="bd" style="padding:0">
+                  <label>Data</label>
+                  <div class="field"><input id="depDate" type="date" /></div>
+
+                  <label>Klient (np. Jan / Sklep Oćice)</label>
+                  <div class="field"><input id="depClient" type="text" placeholder="Wpisz nazwę klienta" /></div>
+
+                  <label>Akcja</label>
+                  <div class="field">
+                    <select id="depType">
+                      <option value="out">➕ Wydaj pojemniki</option>
+                      <option value="in">➖ Przyjmij zwrot</option>
+                    </select>
+                  </div>
+
+                  <label>Ilość pojemników (15 jaj)</label>
+                  <div class="field"><input id="depQty" type="number" min="1" step="1" inputmode="numeric" value="1" /></div>
+
+                  <div class="kpis" style="margin-top:12px">
+                    <div class="kpi gray">
+                      <div class="t">Stawka kaucji</div>
+                      <div class="v"><span id="depRateView">0</span></div>
+                      <div class="h">PLN / pojemnik</div>
+                    </div>
+                    <div class="kpi orange">
+                      <div class="t">Zmiana kaucji</div>
+                      <div class="v"><span id="depDeltaMoney">0.00</span></div>
+                      <div class="h">PLN</div>
+                    </div>
+                  </div>
+
+                  <div class="btnrow" style="margin-top:12px">
+                    <button class="btn primary" id="btnDepSave">Zatwierdź ✅</button>
+                    <button class="btn ghost" id="btnDepClear">Wyczyść</button>
+                  </div>
+
+                  <div class="card" style="margin-top:12px;box-shadow:none;border:1px solid var(--bdr);background:rgba(255,255,255,.02)">
+                    <div class="hd" style="border:0;background:transparent;padding:10px 12px">
+                      <h2 style="font-size:14px">⚙️ Ustawienia kaucji</h2>
+                      <span class="badge" id="depSettingsBadge">—</span>
+                    </div>
+                    <div class="bd" style="padding:0 12px 12px">
+                      <label>Kaucja za 1 pojemnik (PLN)</label>
+                      <div class="field"><input id="depRate" type="number" min="0" step="0.5" inputmode="decimal" value="5" /></div>
+
+                      <label>Próg ostrzeżenia (dni)</label>
+                      <div class="field"><input id="depWarnDays" type="number" min="1" step="1" inputmode="numeric" value="60" /></div>
+
+                      <label>Próg „sprzedaż pojemnika” (dni)</label>
+                      <div class="field"><input id="depSellDays" type="number" min="1" step="1" inputmode="numeric" value="90" /></div>
+
+                      <div class="btnrow">
+                        <button class="btn ghost" id="btnDepSaveSettings">Zapisz ustawienia</button>
+                      </div>
+                      <p class="hint">Po przekroczeniu progu „sprzedaż” możesz zaliczyć kaucję jako sprzedaż opakowań.</p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="card" style="box-shadow:none;border:0;background:transparent">
+                <div class="hd" style="border:0;background:transparent;padding:0 0 10px">
+                  <h2 style="font-size:16px">👥 Klienci i saldo</h2>
+                  <span class="badge" id="depClientsCount">0</span>
+                </div>
+                <div class="bd" style="padding:0">
+                  <div class="kpis" style="margin-bottom:12px">
+                    <div class="kpi gray">
+                      <div class="t">Pojemniki w obiegu</div>
+                      <div class="v"><span id="depBoxesOut">0</span></div>
+                      <div class="h">szt</div>
+                    </div>
+                    <div class="kpi orange">
+                      <div class="t">Kaucja u klientów</div>
+                      <div class="v"><span id="depMoneyOut">0.00</span></div>
+                      <div class="h">PLN</div>
+                    </div>
+                    <div class="kpi red">
+                      <div class="t">Zaległe (warn+)</div>
+                      <div class="v"><span id="depOverdue">0</span></div>
+                      <div class="h">klientów</div>
+                    </div>
+                  </div>
+
+                  <div class="tablewrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Klient</th>
+                          <th style="width:110px">Pojemniki</th>
+                          <th style="width:110px">Kaucja</th>
+                          <th style="width:120px">Najstarsze (dni)</th>
+                          <th style="width:190px">Akcje</th>
+                        </tr>
+                      </thead>
+                      <tbody id="depClientsTbody">
+                        <tr><td class="muted" colspan="5">Brak danych.</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="btnrow" style="margin-top:12px">
+                    <button class="btn ghost" id="btnDepExport">Eksport kaucji</button>
+                    <button class="btn danger" id="btnDepClearAll">Usuń historię kaucji</button>
+                  </div>
+                  <p class="hint">Tip: wpisuj klienta zawsze tak samo (np. „Sklep Oćice”, nie raz „Sklep” raz „Oćice”).</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <div class="hd"><h2>🧾 Historia kaucji</h2><span class="badge" id="depHistBadge">—</span></div>
+            <div class="bd">
+              <div class="tablewrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width:120px">Data</th>
+                      <th>Klient</th>
+                      <th style="width:160px">Akcja</th>
+                      <th style="width:110px">Pojemniki</th>
+                      <th style="width:110px">PLN</th>
+                      <th style="width:140px">Akcje</th>
+                    </tr>
+                  </thead>
+                  <tbody id="depHistTbody">
+                    <tr><td class="muted" colspan="6">Brak historii.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="btnrow" style="margin-top:12px">
+                <button class="btn ghost" id="btnDepPrev">←</button>
+                <span class="badge" id="depPageInfo">1 / 1</span>
+                <button class="btn ghost" id="btnDepNext">→</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-costs">
+      <div class="card">
+        <div class="hd"><h2>💸 Koszty</h2><span class="badge" id="costsBadge">—</span></div>
+        <div class="bd">
+          <div class="grid2">
+            <div>
+              <div class="card" style="box-shadow:none;border:0;background:transparent">
+                <div class="hd" style="border:0;background:transparent;padding:0 0 10px">
+                  <h2 style="font-size:16px">➕ Dodaj koszt</h2>
+                  <span class="badge" id="costEntryBadge">—</span>
+                </div>
+                <div class="bd" style="padding:0">
+                  <label>Data</label>
+                  <div class="field"><input id="cDate" type="date" /></div>
+
+                  <label>Kategoria</label>
+                  <div class="field">
+                    <select id="cCategory">
+                      <option value="Pasza">Pasza</option>
+                      <option value="Poidła / karmniki">Poidła / karmniki</option>
+                      <option value="Leki / suplementy">Leki / suplementy</option>
+                      <option value="Naprawy / materiały">Naprawy / materiały</option>
+                      <option value="Energia / prąd">Energia / prąd</option>
+                      <option value="Inne">Inne</option>
+                    </select>
+                  </div>
+
+                  <label>Kwota (PLN)</label>
+                  <div class="field"><input id="cAmount" type="number" min="0" step="0.01" inputmode="decimal" placeholder="np. 120.00" /></div>
+
+                  <label>Notatka (opcjonalnie)</label>
+                  <div class="field"><input id="cNote" type="text" placeholder="np. worek 25kg / Allegro / sklep" /></div>
+
+                  <div class="btnrow">
+                    <button class="btn primary" id="btnAddCost">Zapisz koszt ✅</button>
+                    <button class="btn ghost" id="btnClearCost">Wyczyść</button>
+                    <button class="btn danger" id="btnClearCostsAll">Usuń wszystkie koszty</button>
+                  </div>
+
+                  <p class="hint">Koszty są liczone w raportach jako suma wydatków z wybranego zakresu.</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="card" style="box-shadow:none;border:0;background:transparent">
+                <div class="hd" style="border:0;background:transparent;padding:0 0 10px">
+                  <h2 style="font-size:16px">📋 Ostatnie koszty</h2>
+                  <span class="badge" id="costsCount">0</span>
+                </div>
+                <div class="bd" style="padding:0">
+                  <div class="tablewrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th style="width:120px">Data</th>
+                          <th style="width:170px">Kategoria</th>
+                          <th style="width:120px">PLN</th>
+                          <th>Notatka</th>
+                          <th style="width:150px">Akcje</th>
+                        </tr>
+                      </thead>
+                      <tbody id="costsTbody">
+                        <tr><td class="muted" colspan="5">Brak kosztów.</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p class="hint">Koszty są trzymane offline w localStorage, tak jak wpisy jaj.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="btnrow" style="margin-top:12px">
+            <button class="btn ghost" id="btnExportAll">Eksport wszystko (wpisy + koszty)</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <section class="page" id="page-settings">
+      <div class="card">
+        <div class="hd"><h2>⚙️ Ustawienia</h2><span class="badge">localStorage</span></div>
+        <div class="bd">
+          <label>Stan początkowy (jaj)</label>
+          <div class="field"><input id="sStartStock" type="number" min="0" step="1" inputmode="numeric" /></div>
+          <label>Domyślna cena / szt. (PLN)</label>
+          <div class="field"><input id="sDefaultPrice" type="number" min="0" step="0.01" inputmode="decimal" /></div>
+          <div class="btnrow">
+            <button class="btn primary" id="btnSaveSettings">Zapisz ustawienia</button>
+            <button class="btn danger" id="btnResetSettings">Reset ustawień</button>
+          </div>
+          <p class="hint">Domyślna cena uzupełnia się automatycznie, jeśli nie wpiszesz ceny w szybkim wpisie.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav" aria-label="Menu">
+    <button class="active" data-page="dashboard"><span class="ic">🏠</span><span>Pulpit</span></button>
+    <button data-page="history"><span class="ic">🧾</span><span>Historia</span></button>
+    <button data-page="reports"><span class="ic">📊</span><span>Raporty</span></button>
+    <button data-page="deposits"><span class="ic">📦</span><span>Pojemniki</span></button>
+    <button data-page="costs"><span class="ic">💸</span><span>Koszty</span></button>
+    <button data-page="settings"><span class="ic">⚙️</span><span>Ustawienia</span></button>
+  </nav>
+
+  <div class="toast" id="toast"><b id="toastT">OK</b><span id="toastM"></span></div>
+</div>
+
+<script>
+(()=> {
+  "use strict";
+  const KEY_ENTRIES = "kmpro_entries_v5";
+  const KEY_SETTINGS = "kmpro_settings_v5";
+  const KEY_COSTS = "kmpro_costs_v5";
+  const KEY_DEPOSITS = "kmpro_deposits_v5";
+  const KEY_DEPSET = "kmpro_dep_settings_v5";
+  let __cacheEntries = null;
+  let __cacheSettings = null;
+  let __cacheCosts = null;
+  let __cacheDeposits = null;
+  let __cacheDepSet = null;
+  let __renderPending = false;
+
+  const $ = (sel)=>document.querySelector(sel);
+  const $$ = (sel)=>Array.from(document.querySelectorAll(sel));
+  const pad2 = (n)=>String(n).padStart(2,"0");
+  const todayISO = ()=>{
+    const d = new Date();
+    return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+  };
+  const isoYesterday = ()=>{
+    const d = new Date(); d.setDate(d.getDate()-1);
+    return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+  };
+  const num = (v)=> {
+    const x = Number(String(v).replace(",", "."));
+    return Number.isFinite(x) ? x : 0;
+  };
+  const money = (v)=> (Math.round(num(v)*100)/100).toFixed(2);
+  const escapeHtml = (s)=> String(s ?? "").replace(/[&<>"']/g, (m)=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]));
+
+
+  // ===== Pojemniki / Kaucja =====
+  let __depPage = 1;
+  const DEP_PAGE_SIZE = 30;
+
+  const depNormClient = (name)=> String(name||"").trim().replace(/\s+/g," ");
+
+  const loadDepSettings = ()=>{
+    if(__cacheDepSet) return __cacheDepSet;
+    try{
+      const raw = localStorage.getItem(KEY_DEPSET);
+      const s = raw ? JSON.parse(raw) : {};
+      __cacheDepSet = {
+        rate: Math.max(0, num(s.rate ?? 5)),
+        warnDays: Math.max(1, Math.floor(num(s.warnDays ?? 60))),
+        sellDays: Math.max(1, Math.floor(num(s.sellDays ?? 90))),
+      };
+    }catch{
+      __cacheDepSet = {rate:5,warnDays:60,sellDays:90};
+    }
+    return __cacheDepSet;
+  };
+
+  const saveDepSettings = (s)=>{
+    __cacheDepSet = s;
+    localStorage.setItem(KEY_DEPSET, JSON.stringify(s));
+  };
+
+  const loadDeposits = ()=>{
+    if(__cacheDeposits) return __cacheDeposits;
+    try{
+      const raw = localStorage.getItem(KEY_DEPOSITS);
+      const arr = raw ? JSON.parse(raw) : [];
+      __cacheDeposits = Array.isArray(arr) ? arr : [];
+    }catch{
+      __cacheDeposits = [];
+    }
+    return __cacheDeposits;
+  };
+
+  const saveDeposits = (arr)=>{
+    __cacheDeposits = arr;
+    localStorage.setItem(KEY_DEPOSITS, JSON.stringify(arr));
+  };
+
+  const addDepositEntry = (e)=>{
+    const arr = loadDeposits().slice();
+    arr.push(e);
+    arr.sort((a,b)=> (String(a.date).localeCompare(String(b.date))) || ((a.createdAt||0)-(b.createdAt||0)));
+    saveDeposits(arr);
+  };
+
+  const daysBetweenISO = (aISO, bISO)=>{
+    const a = new Date(aISO+"T00:00:00");
+    const b = new Date(bISO+"T00:00:00");
+    return Math.max(0, Math.floor((b-a)/(1000*60*60*24)));
+  };
+
+  const depositSummary = ()=>{
+    const deps = loadDeposits();
+    const ds = loadDepSettings();
+    const today = todayISO();
+
+    const by = new Map();
+    const sorted = deps.slice().sort((a,b)=> (String(a.date).localeCompare(String(b.date))) || ((a.createdAt||0)-(b.createdAt||0)));
+    for(const e of sorted){
+      const client = depNormClient(e.client);
+      if(!client) continue;
+      let st = by.get(client);
+      if(!st){ st = {boxes:0, money:0, lots:[]}; by.set(client, st); }
+      const db = Math.trunc(num(e.deltaBoxes));
+      const dm = num(e.deltaMoney);
+      st.boxes += db;
+      st.money += dm;
+      if(db>0) st.lots.push({date:String(e.date||today), qty:db});
+      else if(db<0){
+        let need = -db;
+        while(need>0 && st.lots.length){
+          const lot = st.lots[0];
+          const take = Math.min(need, lot.qty);
+          lot.qty -= take;
+          need -= take;
+          if(lot.qty<=0) st.lots.shift();
+        }
+      }
+    }
+
+    let boxesOut=0, moneyOut=0, overdue=0;
+    const clients=[];
+    for(const [client, st] of by){
+      const boxes = Math.max(0, st.boxes);
+      const moneyV = Math.max(0, st.moneyV ?? st.money); // backward safety
+      const money = Math.max(0, st.money);
+      const mny = Number.isFinite(money) ? money : 0;
+      if(boxes===0 && mny===0) continue;
+      const oldest = (boxes>0 && st.lots.length) ? st.lots[0].date : today;
+      const age = boxes>0 ? daysBetweenISO(oldest, today) : 0;
+      const status = age>=ds.sellDays ? "sell" : (age>=ds.warnDays ? "warn" : "ok");
+      if(status!=="ok") overdue++;
+      boxesOut += boxes;
+      moneyOut += mny;
+      clients.push({client, boxes, money:mny, age, status});
+    }
+    clients.sort((a,b)=> (b.age-a.age) || a.client.localeCompare(b.client));
+    return {ds, depsCount: deps.length, boxesOut, moneyOut, overdue, clients};
+  };
+
+  const depUpdateQuickMoney = ()=>{
+    const ds = loadDepSettings();
+    const qty = Math.max(1, Math.trunc(num($("#depQty")?.value ?? 1)));
+    if($("#depRateView")) $("#depRateView").textContent = String(ds.rate);
+    if($("#depDeltaMoney")) $("#depDeltaMoney").textContent = money(qty * ds.rate);
+    if($("#depSettingsBadge")) $("#depSettingsBadge").textContent = `warn: ${ds.warnDays}d · sprzedaż: ${ds.sellDays}d`;
+  };
+
+  const renderDeposits = ()=>{
+    const sum = depositSummary();
+    const ds = sum.ds;
+
+    if($("#depBadge")) $("#depBadge").textContent = `wpisów: ${sum.depsCount}`;
+    if($("#depQuickBadge")) $("#depQuickBadge").textContent = todayISO();
+    if($("#depBoxesOut")) $("#depBoxesOut").textContent = String(sum.boxesOut);
+    if($("#depMoneyOut")) $("#depMoneyOut").textContent = money(sum.moneyOut);
+    if($("#depOverdue")) $("#depOverdue").textContent = String(sum.overdue);
+    if($("#depClientsCount")) $("#depClientsCount").textContent = String(sum.clients.length);
+
+    if($("#repDepBoxes")) $("#repDepBoxes").textContent = String(sum.boxesOut);
+    if($("#repDepMoney")) $("#repDepMoney").textContent = money(sum.moneyOut);
+    if($("#repDepOverdue")) $("#repDepOverdue").textContent = String(sum.overdue);
+
+    const tb = $("#depClientsTbody");
+    if(tb){
+      if(sum.clients.length===0){
+        tb.innerHTML = `<tr><td class="muted" colspan="5">Brak danych.</td></tr>`;
+      }else{
+        tb.innerHTML = sum.clients.map(c=>{
+          const badge = c.status==="sell" ? "🟥" : (c.status==="warn" ? "🟨" : "🟩");
+          return `<tr>
+            <td>${badge} ${escapeHtml(c.client)}</td>
+            <td class="mono">${c.boxes}</td>
+            <td class="mono">${money(c.money)}</td>
+            <td class="mono">${c.age}</td>
+            <td><div class="actions">
+              <button class="chipbtn" data-dep-act="out" data-client="${escapeHtml(c.client)}">+1 wydaj</button>
+              <button class="chipbtn" data-dep-act="in" data-client="${escapeHtml(c.client)}">+1 zwrot</button>
+              <button class="chipbtn" data-dep-act="sell" data-client="${escapeHtml(c.client)}">Sprzedaż</button>
+            </div></td>
+          </tr>`;
+        }).join("");
+      }
+    }
+
+    const deps = loadDeposits().slice().sort((a,b)=> (String(b.date).localeCompare(String(a.date))) || ((b.createdAt||0)-(a.createdAt||0)));
+    const totalPages = Math.max(1, Math.ceil(deps.length/DEP_PAGE_SIZE));
+    __depPage = Math.min(Math.max(1, __depPage), totalPages);
+    const start = (__depPage-1)*DEP_PAGE_SIZE;
+    const page = deps.slice(start, start+DEP_PAGE_SIZE);
+
+    if($("#depPageInfo")) $("#depPageInfo").textContent = `${__depPage} / ${totalPages}`;
+    if($("#depHistBadge")) $("#depHistBadge").textContent = `strona ${__depPage}/${totalPages}`;
+
+    const htb = $("#depHistTbody");
+    if(htb){
+      if(page.length===0){
+        htb.innerHTML = `<tr><td class="muted" colspan="6">Brak historii.</td></tr>`;
+      }else{
+        htb.innerHTML = page.map(e=>{
+          const isOut = Math.trunc(num(e.deltaBoxes))>0;
+          const act = isOut ? "Wydanie" : "Zwrot";
+          return `<tr>
+            <td class="mono">${escapeHtml(e.date)}</td>
+            <td>${escapeHtml(e.client)}</td>
+            <td>${isOut ? "➕" : "➖"} ${act}</td>
+            <td class="mono">${Math.abs(Math.trunc(num(e.deltaBoxes)))}</td>
+            <td class="mono">${money(num(e.deltaMoney))}</td>
+            <td><div class="actions"><button class="chipbtn" data-dep-del="${escapeHtml(e.id)}">Usuń</button></div></td>
+          </tr>`;
+        }).join("");
+      }
+    }
+
+    if($("#depDate") && !$("#depDate").value) $("#depDate").value = todayISO();
+    if($("#depRate")) $("#depRate").value = String(ds.rate);
+    if($("#depWarnDays")) $("#depWarnDays").value = String(ds.warnDays);
+    if($("#depSellDays")) $("#depSellDays").value = String(ds.sellDays);
+
+    depUpdateQuickMoney();
+  };
+
+  const depQuick = (client, type, qty)=>{
+    const ds = loadDepSettings();
+    const sign = (type==="out" ? +1 : -1);
+    qty = Math.max(1, Math.trunc(qty));
+    addDepositEntry({ id: uuid(), date: todayISO(), client, deltaBoxes: sign*qty, deltaMoney: sign*ds.rate*qty, createdAt: Date.now() });
+    toast(type==="out" ? "Wydano" : "Zwrot", `${client} · ${qty} szt`);
+    scheduleRender();
+  };
+
+  const depSell = (client)=>{
+    const sum = depositSummary();
+    const c = sum.clients.find(x=>x.client===client);
+    if(!c || c.boxes<=0) return;
+    if(!confirm(`Zaliczyć kaucję jako sprzedaż opakowań?\n${client}\nPojemniki: ${c.boxes}\nKaucja: ${money(c.money)} PLN`)) return;
+    // zamykamy saldo: -boxy i -kaucja
+    addDepositEntry({ id: uuid(), date: todayISO(), client, deltaBoxes: -c.boxes, deltaMoney: -c.money, createdAt: Date.now(), note:"sprzedaż opakowań" });
+    toast("Zaliczone", `${client} · ${c.boxes} szt`);
+    scheduleRender();
+  };
+
+
+  function toast(title, msg=""){
+    const el = $("#toast");
+    $("#toastT").textContent = title;
+    $("#toastM").textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(()=>el.classList.remove("show"), 2200);
+  }
+  function uuid(){
+    return (crypto?.randomUUID ? crypto.randomUUID() : String(Date.now())+"_"+Math.random().toString(16).slice(2));
+  }
+
+  function loadEntries(){
+    if(__cacheEntries) return __cacheEntries;
+    try{
+      const raw = localStorage.getItem(KEY_ENTRIES);
+      const arr = raw ? JSON.parse(raw) : [];
+      __cacheEntries = Array.isArray(arr) ? arr : [];
+      return __cacheEntries;
+    }catch{
+      __cacheEntries = [];
+      return __cacheEntries;
+    }
+  }
+  function saveEntries(arr){
+    __cacheEntries = arr;
+    localStorage.setItem(KEY_ENTRIES, JSON.stringify(arr));
+  }
+  function loadSettings(){
+    if(__cacheSettings) return __cacheSettings;
+    try{
+      const raw = localStorage.getItem(KEY_SETTINGS);
+      const s = raw ? JSON.parse(raw) : {};
+      __cacheSettings = {
+        startStock: Math.max(0, Math.floor(num(s.startStock ?? 0))),
+        defaultPrice: Math.max(0, num(s.defaultPrice ?? 0)),
+      };
+      return __cacheSettings;
+    }catch{
+      __cacheSettings = { startStock:0, defaultPrice:0 };
+      return __cacheSettings;
+    }
+  }
+  function saveSettings(s){
+    __cacheSettings = s;
+    localStorage.setItem(KEY_SETTINGS, JSON.stringify(s));
+  }
+
+  
+  function loadCosts(){
+    if(__cacheCosts) return __cacheCosts;
+    try{
+      const raw = localStorage.getItem(KEY_COSTS);
+      const arr = raw ? JSON.parse(raw) : [];
+      __cacheCosts = Array.isArray(arr) ? arr : [];
+      return __cacheCosts;
+    }catch{
+      __cacheCosts = [];
+      return __cacheCosts;
+    }
+  }
+  function saveCosts(arr){
+    __cacheCosts = arr;
+    localStorage.setItem(KEY_COSTS, JSON.stringify(arr));
+  }
+  function calcCosts(costs, fromISO, toISO){
+    let total = 0;
+    for(const c of costs){
+      if(c.date < fromISO || c.date > toISO) continue;
+      total += Math.max(0, num(c.amount));
+    }
+    return total;
+  }
+
+function calcTotals(entries, fromISO, toISO){
+    let collected = 0, sold = 0, damaged = 0, revenue = 0;
+    for(const e of entries){
+      if(e.date < fromISO || e.date > toISO) continue;
+      const c = Math.max(0, Math.floor(num(e.collected)));
+      const d = Math.max(0, Math.floor(num(e.damaged ?? 0)));
+      const s = Math.max(0, Math.floor(num(e.sold)));
+      const p = Math.max(0, num(e.price));
+      collected += c; damaged += d; sold += s; revenue += s * p;
+    }
+    return { collected, damaged, sold, revenue };
+  }
+  function calcStock(entries, settings){
+    const t = calcTotals(entries, "0000-01-01", "9999-12-31");
+    return Math.floor(num(settings.startStock) + t.collected - t.sold - t.damaged);
+  }
+
+  function scheduleRender(){
+    if(__renderPending) return;
+    __renderPending = true;
+    requestAnimationFrame(()=>{ __renderPending=false; renderAll(); });
+  }
+
+  function showPage(name){
+    $$(".page").forEach(p=>p.classList.remove("active"));
+    $("#page-"+name).classList.add("active");
+    $$(".nav button").forEach(b=>b.classList.toggle("active", b.dataset.page===name));
+    scheduleRender();
+  }
+  $$(".nav button").forEach(btn=>btn.addEventListener("click", ()=>showPage(btn.dataset.page)));
+
+  // Quick entry steppers
+  const bump = (sel, delta)=>{
+    const el = $(sel);
+    const v = Math.max(0, Math.floor(num(el.value)));
+    el.value = String(Math.max(0, v + delta));
+  };
+  $("#colPlus").addEventListener("click", ()=>bump("#dCollected", 1));
+
+  // Damaged eggs stepper
+  $("#damMinus")?.addEventListener("click", ()=>{
+    const el = $("#dDamaged"); if(!el) return;
+    el.value = String(Math.max(0, num(el.value||0)-1));
+  });
+  $("#damPlus")?.addEventListener("click", ()=>{
+    const el = $("#dDamaged"); if(!el) return;
+    el.value = String(Math.max(0, num(el.value||0)+1));
+  });
+  $("#colMinus").addEventListener("click", ()=>bump("#dCollected", -1));
+  $("#soldPlus").addEventListener("click", ()=>bump("#dSold", 1));
+  $("#soldMinus").addEventListener("click", ()=>bump("#dSold", -1));
+$("#dDateSelect").addEventListener("change", ()=>{
+    const v = $("#dDateSelect").value;
+    if(v==="today") $("#dDate").value = todayISO();
+    if(v==="yesterday") $("#dDate").value = isoYesterday();
+    if(v==="custom" && !$("#dDate").value) $("#dDate").value = todayISO();
+    scheduleRender();
+  });
+  $("#dDate").addEventListener("change", ()=>{
+    const v = $("#dDate").value || todayISO();
+    if(v===todayISO()) $("#dDateSelect").value="today";
+    else if(v===isoYesterday()) $("#dDateSelect").value="yesterday";
+    else $("#dDateSelect").value="custom";
+    scheduleRender();
+  });
+
+  const clearEntryInputs = ()=>{
+    $("#dCollected").value = "";
+    $("#dDamaged").value = "";
+    $("#dSold").value = "";
+    $("#dPrice").value = "";
+    $("#dNote").value = "";
+  };
+  $("#btnClear").addEventListener("click", ()=>{ clearEntryInputs(); toast("Wyczyszczono"); });
+
+  $("#btnAddEntry").addEventListener("click", ()=>{
+    const settings = loadSettings();
+    const date = $("#dDate").value || todayISO();
+    const collected = Math.max(0, Math.floor(num($("#dCollected").value)));
+    const damaged = Math.max(0, Math.floor(num($("#dDamaged").value)));
+    const sold = Math.max(0, Math.floor(num($("#dSold").value)));
+    const note = ($("#dNote").value || "").trim();
+    const priceRaw = $("#dPrice").value;
+    const price = priceRaw==="" ? Math.max(0, num(settings.defaultPrice)) : Math.max(0, num(priceRaw));
+
+    if(collected===0 && sold===0 && damaged===0){
+      toast("Nic nie zapisano", "Wpisz zbiór, uszkodzone lub sprzedaż.");
+      return;
+    }
+    const e = { id: uuid(), date, collected, damaged, sold, price, note, createdAt: Date.now() };
+    const entries = loadEntries().slice();
+    entries.push(e);
+    entries.sort((a,b)=> (a.date.localeCompare(b.date)) || (a.createdAt-b.createdAt));
+    saveEntries(entries);
+    clearEntryInputs();
+    toast("Zapisano ✅", `${date}: +${collected}, ✖${damaged}, −${sold}`);
+    scheduleRender();
+  });
+
+  $("#btnUndo").addEventListener("click", ()=>{
+    const entries = loadEntries().slice();
+    const last = entries.pop();
+    if(!last){ toast("Brak wpisów"); return; }
+    saveEntries(entries);
+    toast("Cofnięto", `${last.date}`);
+    scheduleRender();
+  });
+
+  // History
+  let histPage = 1;
+  const PAGE_SIZE = 50;
+  $("#histFilter").addEventListener("input", ()=>{ histPage=1; scheduleRender(); });
+  $("#prevPage").addEventListener("click", ()=>{ histPage=Math.max(1, histPage-1); scheduleRender(); });
+  $("#nextPage").addEventListener("click", ()=>{ histPage=histPage+1; scheduleRender(); });
+
+  function exportJSON(){
+    const payload = { app:"Kurnik Manager PRO", version:"v5", exportedAt:new Date().toISOString(), settings:loadSettings(), entries: loadEntries(), costs: loadCosts(), deposits: loadDeposits(), depSettings: loadDepSettings() };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `kurnik_manager_pro_export_${todayISO()}.json`;
+    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  }
+  $("#btnExport").addEventListener("click", exportJSON);
+  const btnExportAll = $("#btnExportAll");
+  if(btnExportAll) btnExportAll.addEventListener("click", exportJSON);
+$("#btnImport").addEventListener("click", ()=>$("#fileImport").click());
+  $("#fileImport").addEventListener("change", async (ev)=>{
+    const file = ev.target.files?.[0];
+    ev.target.value = "";
+    if(!file) return;
+    try{
+      const data = JSON.parse(await file.text());
+      const entries = Array.isArray(data.entries) ? data.entries : [];
+      const clean = entries.map(e=>({
+        id: String(e.id || uuid()),
+        date: String(e.date || todayISO()),
+        collected: Math.max(0, Math.floor(num(e.collected))),
+        sold: Math.max(0, Math.floor(num(e.sold))),
+        price: Math.max(0, num(e.price)),
+        note: String(e.note || ""),
+        createdAt: Number.isFinite(Number(e.createdAt)) ? Number(e.createdAt) : Date.now()
+      })).filter(e=>/^\d{4}-\d{2}-\d{2}$/.test(e.date));
+      saveEntries(clean.sort((a,b)=>(a.date.localeCompare(b.date)) || (a.createdAt-b.createdAt)));
+      
+      if(Array.isArray(data.costs)){
+        const costs = data.costs.map(c=>({
+          id: String(c.id || uuid()),
+          date: String(c.date || todayISO()),
+          category: String(c.category || "Inne"),
+          amount: Math.max(0, num(c.amount)),
+          note: String(c.note || ""),
+          createdAt: Number.isFinite(Number(c.createdAt)) ? Number(c.createdAt) : Date.now()
+        })).filter(c=>/^\d{4}-\d{2}-\d{2}$/.test(c.date));
+        saveCosts(costs.sort((a,b)=>(a.date.localeCompare(b.date)) || (a.createdAt-b.createdAt)));
+      }
+
+      if(data.settings){
+        saveSettings({
+          startStock: Math.max(0, Math.floor(num(data.settings.startStock ?? 0))),
+          defaultPrice: Math.max(0, num(data.settings.defaultPrice ?? 0)),
+        });
+      }
+      toast("Import OK ✅", `Wpisy: ${clean.length}`);
+      scheduleRender();
+    }catch{
+      toast("Błąd importu", "To nie wygląda na JSON z aplikacji.");
+    }
+  });
+
+  $("#btnClearAll").addEventListener("click", ()=>{
+    if(!confirm("Na pewno usunąć WSZYSTKIE wpisy?")) return;
+    localStorage.removeItem(KEY_ENTRIES);
+    __cacheEntries = null;
+    histPage = 1;
+    toast("Usunięto", "Wszystkie wpisy skasowane.");
+    scheduleRender();
+  });
+
+  
+  // ===== Costs =====
+  const cDate = $("#cDate");
+  if(cDate){
+    cDate.value = todayISO();
+    $("#costEntryBadge").textContent = cDate.value;
+    cDate.addEventListener("change", ()=>{ $("#costEntryBadge").textContent = cDate.value || todayISO(); });
+  }
+
+  const btnAddCost = $("#btnAddCost");
+  if(btnAddCost){
+    btnAddCost.addEventListener("click", ()=>{
+      const date = $("#cDate").value || todayISO();
+      const category = ($("#cCategory").value || "Inne").trim();
+      const amount = Math.max(0, num($("#cAmount").value));
+      const note = ($("#cNote").value || "").trim();
+      if(amount<=0){
+        toast("Kwota?", "Podaj kwotę kosztu.");
+        return;
+      }
+      const c = { id: uuid(), date, category, amount, note, createdAt: Date.now() };
+      const costs = loadCosts().slice();
+      costs.push(c);
+      costs.sort((a,b)=> (a.date.localeCompare(b.date)) || (a.createdAt-b.createdAt));
+      saveCosts(costs);
+      renderCosts();
+      scheduleRender();
+
+      $("#cAmount").value = "";
+      $("#cNote").value = "";
+      toast("Zapisano koszt ✅", `${money(amount)} PLN`);
+      scheduleRender();
+    });
+  }
+
+  const btnClearCost = $("#btnClearCost");
+  if(btnClearCost){
+    btnClearCost.addEventListener("click", ()=>{ $("#cAmount").value=""; $("#cNote").value=""; toast("Wyczyszczono"); });
+  }
+
+  const btnClearCostsAll = $("#btnClearCostsAll");
+  if(btnClearCostsAll){
+    btnClearCostsAll.addEventListener("click", ()=>{
+      if(!confirm("Usunąć WSZYSTKIE koszty?")) return;
+      localStorage.removeItem(KEY_COSTS);
+      __cacheCosts = null;
+      toast("Usunięto", "Wszystkie koszty skasowane.");
+      scheduleRender();
+    });
+  }
+
+// Reports
+  let repMode = "week";
+  let customFrom = "";
+  let customTo = "";
+  $$("#repTabs button").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      repMode = b.dataset.tab;
+      $$("#repTabs button").forEach(x=>x.classList.toggle("active", x===b));
+      $("#rep-custom").style.display = (repMode==="custom") ? "block" : "none";
+      if(repMode==="week") $("#repLabel").textContent="Ostatnie 7 dni (włącznie z dzisiaj).";
+      if(repMode==="month") $("#repLabel").textContent="Bieżący miesiąc.";
+      if(repMode==="custom") $("#repLabel").textContent="Wybrany zakres.";
+
+      if(repMode==="custom"){
+        const to = todayISO();
+        const now = new Date();
+        const fromDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()-6, 12,0,0);
+        const from = `${fromDate.getFullYear()}-${pad2(fromDate.getMonth()+1)}-${pad2(fromDate.getDate())}`;
+        if(!$("#rFrom").value) $("#rFrom").value = from;
+        if(!$("#rTo").value) $("#rTo").value = to;
+        $("#rep-custom").scrollIntoView({behavior:"smooth", block:"start"});
+        setTimeout(()=>$("#rFrom").focus(), 200);
+      }
+      scheduleRender();
+    });
+  });
+  $("#btnApplyRange").addEventListener("click", ()=>{
+    customFrom = $("#rFrom").value || "";
+    customTo = $("#rTo").value || "";
+    if(!customFrom || !customTo){ toast("Uzupełnij daty"); return; }
+    if(customFrom > customTo){ toast("Błędny zakres", "Data 'Od' > 'Do'"); return; }
+    toast("Zastosowano", `${customFrom} → ${customTo}`);
+    scheduleRender();
+  });
+
+  // Settings
+  $("#btnSaveSettings").addEventListener("click", ()=>{
+    saveSettings({
+      startStock: Math.max(0, Math.floor(num($("#sStartStock").value))),
+      defaultPrice: Math.max(0, num($("#sDefaultPrice").value)),
+    });
+    toast("Zapisano ✅");
+    scheduleRender();
+  });
+  $("#btnResetSettings").addEventListener("click", ()=>{
+    if(!confirm("Zresetować ustawienia?")) return;
+    localStorage.removeItem(KEY_SETTINGS);
+    __cacheSettings = null;
+    toast("Zresetowano");
+    scheduleRender();
+  });
+
+  function renderAll(){
+    renderDashboard();
+    renderLast();
+    renderHistory();
+    renderReports();
+    renderCosts();
+    renderSettings();
+    if(typeof renderDeposits==="function" && document.getElementById("page-deposits")) renderDeposits();
+}
+
+  function renderDashboard(){
+    const entries = loadEntries();
+    const settings = loadSettings();
+    const date = $("#dDate").value || todayISO();
+
+    $("#dashBadge").textContent = date;
+    $("#entryBadge").textContent = date;
+    $("#lastBadge").textContent = "podgląd";
+    $("#histBadge").textContent = `wpisów: ${entries.length}`;
+
+    const todayT = calcTotals(entries, date, date);
+    const stock = calcStock(entries, settings);
+
+    $("#kpiStock").textContent = String(stock);
+    $("#kpiTodayCollected").textContent = String(todayT.collected);
+    $("#kpiTodaySold").textContent = String(todayT.sold);
+    $("#kpiTodayRevenue").textContent = money(todayT.revenue);
+
+    $("#pillToday").textContent = `${todayT.collected} jaj`;
+    $("#pillStock").textContent = `${stock} jaj`;
+
+    if(date===todayISO()) $("#dDateSelect").value="today";
+    else if(date===isoYesterday()) $("#dDateSelect").value="yesterday";
+    else $("#dDateSelect").value="custom";
+
+    if($("#dPrice").value==="" && settings.defaultPrice>0){
+      $("#dPrice").placeholder = `np. ${money(settings.defaultPrice)}`;
+    }
+  }
+
+  function renderLast(){
+    const entries = loadEntries().slice().sort((a,b)=> (b.date.localeCompare(a.date)) || (b.createdAt-a.createdAt));
+    const last = entries.slice(0,7);
+    const tb = $("#lastTbody");
+    if(last.length===0){
+      tb.innerHTML = `<tr><td class="muted" colspan="6">Brak wpisów.</td></tr>`;
+      return;
+    }
+    tb.innerHTML = last.map(e=>{
+      const rev = Math.max(0, Math.floor(num(e.sold))) * Math.max(0, num(e.price));
+      return `<tr>
+        <td class="mono">${escapeHtml(e.date)}</td>
+        <td>${escapeHtml(e.collected)}</td>
+        <td>${escapeHtml(e.damaged ?? 0)}</td>
+        <td>${escapeHtml(e.sold)}</td>
+        <td class="mono">${money(rev)}</td>
+        <td>${escapeHtml(e.note||"")}</td>
+      </tr>`;
+    }).join("");
+  }
+
+  function renderHistory(){
+    const all = loadEntries().slice().sort((a,b)=> (b.date.localeCompare(a.date)) || (b.createdAt-a.createdAt));
+    const q = ($("#histFilter").value || "").trim().toLowerCase();
+    const filtered = q ? all.filter(e=> String(e.date).includes(q) || String(e.note||"").toLowerCase().includes(q)) : all;
+
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    if(histPage > totalPages) histPage = totalPages;
+    const start = (histPage-1) * PAGE_SIZE;
+    const slice = filtered.slice(start, start + PAGE_SIZE);
+    $("#pageInfo").textContent = `Strona ${histPage} / ${totalPages} (wpisów: ${filtered.length})`;
+
+    const tb = $("#histTbody");
+    if(slice.length===0){
+      tb.innerHTML = `<tr><td class="muted" colspan="8">Brak wpisów.</td></tr>`;
+      return;
+    }
+    tb.innerHTML = slice.map(e=>{
+      const rev = Math.max(0, Math.floor(num(e.sold))) * Math.max(0, num(e.price));
+      return `<tr data-id="${escapeHtml(e.id)}">
+        <td class="mono">${escapeHtml(e.date)}</td>
+        <td>${escapeHtml(e.collected)}</td>
+        <td>${escapeHtml(e.damaged ?? 0)}</td>
+        <td>${escapeHtml(e.sold)}</td>
+        <td class="mono">${money(e.price)}</td>
+        <td class="mono">${money(rev)}</td>
+        <td>${escapeHtml(e.note||"")}</td>
+        <td><div class="actions">
+          <button class="chipbtn" data-act="edit">Edytuj</button>
+          <button class="chipbtn" data-act="del">Usuń</button>
+        </div></td>
+      </tr>`;
+    }).join("");
+
+    tb.querySelectorAll("button[data-act]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const tr = btn.closest("tr");
+        const id = tr?.dataset?.id;
+        if(!id) return;
+        if(btn.dataset.act==="del") deleteEntry(id);
+        if(btn.dataset.act==="edit") editEntry(id);
+      });
+    });
+  }
+
+  function deleteEntry(id){
+    const entries = loadEntries().slice();
+    const idx = entries.findIndex(e=>String(e.id)===String(id));
+    if(idx<0) return;
+    if(!confirm("Usunąć ten wpis?")) return;
+    const removed = entries.splice(idx,1)[0];
+    saveEntries(entries);
+    toast("Usunięto", removed.date);
+    scheduleRender();
+  }
+
+  function editEntry(id){
+    const entries = loadEntries().slice();
+    const idx = entries.findIndex(e=>String(e.id)===String(id));
+    if(idx<0) return;
+    const e = entries[idx];
+    const date = prompt("Data (YYYY-MM-DD):", e.date) ?? e.date;
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){ toast("Błędna data"); return; }
+    const collected = Math.max(0, Math.floor(num(prompt("Zebrane (szt.):", e.collected) ?? e.collected)));
+    const damaged = Math.max(0, Math.floor(num(prompt("Uszkodzone (szt.):", e.damaged ?? 0) ?? (e.damaged ?? 0))));
+    const sold = Math.max(0, Math.floor(num(prompt("Sprzedane (szt.):", e.sold) ?? e.sold)));
+    const price = Math.max(0, num(prompt("Cena / szt. (PLN):", e.price) ?? e.price));
+    const note = String(prompt("Notatka:", e.note ?? "") ?? e.note ?? "");
+    entries[idx] = { ...e, date, collected, damaged, sold, price, note, editedAt: Date.now() };
+    entries.sort((a,b)=> (a.date.localeCompare(b.date)) || (a.createdAt-b.createdAt));
+    saveEntries(entries);
+    toast("Zapisano zmiany ✅");
+    scheduleRender();
+  }
+
+  function renderReports(){
+    const entries = loadEntries();
+    const settings = loadSettings();
+        const costs = loadCosts();
+let from, to;
+    if(repMode==="week"){
+      to = todayISO();
+      const d = new Date(); d.setDate(d.getDate()-6);
+      from = `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+    } else if(repMode==="month"){
+      const d = new Date();
+      from = `${d.getFullYear()}-${pad2(d.getMonth()+1)}-01`;
+      const last = new Date(d.getFullYear(), d.getMonth()+1, 0);
+      to = `${last.getFullYear()}-${pad2(last.getMonth()+1)}-${pad2(last.getDate())}`;
+    } else {
+      from = customFrom || ($("#rFrom").value || "");
+      to = customTo || ($("#rTo").value || "");
+      if(!from || !to){
+        $("#repRangeBadge").textContent = "Wybierz zakres";
+        $("#repCollected").textContent = "0";
+        $("#repSold").textContent = "0";
+        $("#repRevenue").textContent = "0.00";
+        $("#repStock").textContent = String(calcStock(entries, settings));
+                if($("#repCosts")) $("#repCosts").textContent = "0.00";
+        if($("#repProfit")) $("#repProfit").textContent = "0.00";
+return;
+      }
+    }
+    $("#repRangeBadge").textContent = `${from} → ${to}`;
+    const t = calcTotals(entries, from, to);
+    $("#repCollected").textContent = String(t.collected);
+    $("#repSold").textContent = String(t.sold);
+    $("#repRevenue").textContent = money(t.revenue);
+    $("#repStock").textContent = String(calcStock(entries, settings));
+      const csum = calcCosts(costs, from, to);
+    $("#repCosts").textContent = money(csum);
+    $("#repProfit").textContent = money(t.revenue - csum);
+}
+
+  
+  function renderCosts(){
+    const costs = loadCosts().slice().sort((a,b)=> (b.date.localeCompare(a.date)) || (b.createdAt-a.createdAt));
+    const badge = $("#costsBadge");
+    if(badge) badge.textContent = `kosztów: ${costs.length}`;
+    const cc = $("#costsCount");
+    if(cc) cc.textContent = String(costs.length);
+
+    const tb = $("#costsTbody");
+    if(!tb) return;
+    const last = costs.slice(0, 80);
+    if(last.length===0){
+      tb.innerHTML = `<tr><td class="muted" colspan="5">Brak kosztów.</td></tr>`;
+      return;
+    }
+    tb.innerHTML = last.map(c=>`<tr data-id="${escapeHtml(c.id)}">
+      <td class="mono">${escapeHtml(c.date)}</td>
+      <td>${escapeHtml(c.category)}</td>
+      <td class="mono">${money(c.amount)}</td>
+      <td>${escapeHtml(c.note||"")}</td>
+      <td>
+        <div class="actions">
+          <button class="chipbtn" data-act="edit">Edytuj</button>
+          <button class="chipbtn" data-act="del">Usuń</button>
+        </div>
+      </td>
+    </tr>`).join("");
+
+    tb.querySelectorAll("button[data-act]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const tr = btn.closest("tr");
+        const id = tr?.dataset?.id;
+        if(!id) return;
+        if(btn.dataset.act==="del") deleteCost(id);
+        if(btn.dataset.act==="edit") editCost(id);
+      });
+    });
+  }
+
+  function deleteCost(id){
+    const costs = loadCosts().slice();
+    const idx = costs.findIndex(c=>String(c.id)===String(id));
+    if(idx<0) return;
+    if(!confirm("Usunąć ten koszt?")) return;
+    const removed = costs.splice(idx,1)[0];
+    saveCosts(costs);
+    toast("Usunięto koszt", `${money(removed.amount)} PLN`);
+    scheduleRender();
+  }
+
+  function editCost(id){
+    const costs = loadCosts().slice();
+    const idx = costs.findIndex(c=>String(c.id)===String(id));
+    if(idx<0) return;
+    const c = costs[idx];
+    const date = prompt("Data (YYYY-MM-DD):", c.date) ?? c.date;
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){ toast("Błędna data"); return; }
+    const category = String(prompt("Kategoria:", c.category) ?? c.category);
+    const amount = Math.max(0, num(prompt("Kwota (PLN):", c.amount) ?? c.amount));
+    const note = String(prompt("Notatka:", c.note ?? "") ?? c.note ?? "");
+    if(amount<=0){ toast("Kwota?", "Musi być > 0"); return; }
+    costs[idx] = { ...c, date, category, amount, note, editedAt: Date.now() };
+    costs.sort((a,b)=> (a.date.localeCompare(b.date)) || (a.createdAt-b.createdAt));
+    saveCosts(costs);
+    toast("Zapisano ✅");
+    scheduleRender();
+  }
+
+function renderSettings(){
+    const s = loadSettings();
+    $("#sStartStock").value = String(s.startStock);
+    $("#sDefaultPrice").value = String(s.defaultPrice);
+  }
+
+  $("#dDate").value = todayISO();
+  toast("Gotowe ✅", "v5 stabilna. Menu działa na desktop i telefonie.");
+  
+  // ===== Deposits UI wiring (delegacja) =====
+  document.addEventListener("click", (e)=>{
+    const t = e.target;
+    if(!(t instanceof HTMLElement)) return;
+
+    if(t.id==="btnDepSave"){
+      const date = $("#depDate")?.value || todayISO();
+      const client = depNormClient($("#depClient")?.value || "");
+      const type = $("#depType")?.value || "out";
+      const qty = Math.max(1, Math.trunc(num($("#depQty")?.value || 1)));
+      if(!client){ toast("Klient?", "Wpisz nazwę klienta."); return; }
+      const ds = loadDepSettings();
+      const sign = (type==="out" ? +1 : -1);
+      addDepositEntry({ id: uuid(), date, client, deltaBoxes: sign*qty, deltaMoney: sign*ds.rate*qty, createdAt: Date.now() });
+      toast("Zapisano ✅", `${client} · ${type==="out" ? "wydano" : "zwrot"} · ${qty} szt`);
+      if($("#depClient")) $("#depClient").value = "";
+      if($("#depQty")) $("#depQty").value = "1";
+      if($("#depType")) $("#depType").value = "out";
+      depUpdateQuickMoney();
+      scheduleRender();
+      return;
+    }
+
+    if(t.id==="btnDepClear"){
+      if($("#depClient")) $("#depClient").value = "";
+      if($("#depQty")) $("#depQty").value = "1";
+      if($("#depType")) $("#depType").value = "out";
+      depUpdateQuickMoney();
+      toast("Wyczyszczono");
+      return;
+    }
+
+    if(t.id==="btnDepSaveSettings"){
+      saveDepSettings({
+        rate: Math.max(0, num($("#depRate")?.value ?? 5)),
+        warnDays: Math.max(1, Math.floor(num($("#depWarnDays")?.value ?? 60))),
+        sellDays: Math.max(1, Math.floor(num($("#depSellDays")?.value ?? 90))),
+      });
+      toast("Zapisano ustawienia ✅");
+      scheduleRender();
+      return;
+    }
+
+    if(t.id==="btnDepPrev"){ __depPage = Math.max(1, __depPage-1); renderDeposits(); return; }
+    if(t.id==="btnDepNext"){ __depPage += 1; renderDeposits(); return; }
+
+    if(t.id==="btnDepClearAll"){
+      if(!confirm("Usunąć CAŁĄ historię kaucji?")) return;
+      localStorage.removeItem(KEY_DEPOSITS);
+      __cacheDeposits = null;
+      toast("Usunięto", "Historia kaucji skasowana.");
+      scheduleRender();
+      return;
+    }
+
+    if(t.id==="btnDepExport"){ exportJSON(); return; }
+
+    const act = t.getAttribute("data-dep-act");
+    if(act){
+      const client = depNormClient(t.getAttribute("data-client") || "");
+      if(!client) return;
+      if(act==="sell") return depSell(client);
+      return depQuick(client, act, 1);
+    }
+
+    const delId = t.getAttribute("data-dep-del");
+    if(delId){
+      if(!confirm("Usunąć ten wpis kaucji?")) return;
+      const deps = loadDeposits().slice().filter(x=>String(x.id)!==String(delId));
+      saveDeposits(deps);
+      toast("Usunięto");
+      scheduleRender();
+      return;
+    }
+  }, {passive:true});
+
+  (function initDeposits(){
+    const ds = loadDepSettings();
+    if($("#depDate")) $("#depDate").value = todayISO();
+    if($("#depRate")) $("#depRate").value = String(ds.rate);
+    if($("#depWarnDays")) $("#depWarnDays").value = String(ds.warnDays);
+    if($("#depSellDays")) $("#depSellDays").value = String(ds.sellDays);
+    if($("#depQty")) $("#depQty").addEventListener("input", depUpdateQuickMoney);
+    if($("#depType")) $("#depType").addEventListener("change", depUpdateQuickMoney);
+    depUpdateQuickMoney();
+  })();
+
+
+  // ===== Deposits UI wiring (delegacja) =====
+  const depHandleSave = ()=>{
+    const date = $("#depDate")?.value || todayISO();
+    const client = depNormClient($("#depClient")?.value || "");
+    const type = $("#depType")?.value || "out";
+    const qty = Math.max(1, Math.trunc(num($("#depQty")?.value || 1)));
+    if(!client){ toast("Klient?", "Wpisz nazwę klienta."); return; }
+    const ds = loadDepSettings();
+    const sign = (type==="out" ? +1 : -1);
+    addDepositEntry({ id: uuid(), date, client, deltaBoxes: sign*qty, deltaMoney: sign*ds.rate*qty, createdAt: Date.now() });
+    if($("#depClient")) $("#depClient").value = "";
+    if($("#depQty")) $("#depQty").value = "1";
+    if($("#depType")) $("#depType").value = "out";
+    depUpdateQuickMoney();
+    toast("Zapisano ✅", `${client} · ${type==="out" ? "wydano" : "zwrot"} · ${qty} szt`);
+    scheduleRender();
+  };
+
+  document.addEventListener("click", (e)=>{
+    const t = e.target;
+    if(!(t instanceof HTMLElement)) return;
+
+    if(t.closest("#btnDepSave")){ e.preventDefault(); depHandleSave(); return; }
+    if(t.closest("#btnDepClear")){
+      if($("#depClient")) $("#depClient").value = "";
+      if($("#depQty")) $("#depQty").value = "1";
+      if($("#depType")) $("#depType").value = "out";
+      depUpdateQuickMoney();
+      toast("Wyczyszczono");
+      return;
+    }
+    if(t.closest("#btnDepSaveSettings")){
+      saveDepSettings({
+        rate: Math.max(0, num($("#depRate")?.value ?? 5)),
+        warnDays: Math.max(1, Math.floor(num($("#depWarnDays")?.value ?? 60))),
+        sellDays: Math.max(1, Math.floor(num($("#depSellDays")?.value ?? 90))),
+      });
+      toast("Zapisano ustawienia ✅");
+      scheduleRender();
+      return;
+    }
+    if(t.closest("#btnDepPrev")){ __depPage = Math.max(1, __depPage-1); renderDeposits(); return; }
+    if(t.closest("#btnDepNext")){ __depPage += 1; renderDeposits(); return; }
+    if(t.closest("#btnDepClearAll")){
+      if(!confirm("Usunąć CAŁĄ historię kaucji?")) return;
+      localStorage.removeItem(KEY_DEPOSITS);
+      __cacheDeposits = null;
+      toast("Usunięto", "Historia kaucji skasowana.");
+      scheduleRender();
+      return;
+    }
+    if(t.closest("#btnDepExport")){ exportJSON(); return; }
+
+    const actEl = t.closest("[data-dep-act]");
+    if(actEl){
+      const act = actEl.getAttribute("data-dep-act");
+      const client = depNormClient(actEl.getAttribute("data-client") || "");
+      if(!client) return;
+      if(act==="sell") depSell(client);
+      else depQuick(client, act, 1);
+      return;
+    }
+    const delEl = t.closest("[data-dep-del]");
+    if(delEl){
+      const delId = delEl.getAttribute("data-dep-del");
+      if(!delId) return;
+      if(!confirm("Usunąć ten wpis kaucji?")) return;
+      const deps = loadDeposits().slice().filter(x=>String(x.id)!==String(delId));
+      saveDeposits(deps);
+      toast("Usunięto");
+      scheduleRender();
+      return;
+    }
+  }, {passive:false});
+
+  // init
+  (function(){
+    loadDepSettings();
+    if($("#depDate") && !$("#depDate").value) $("#depDate").value = todayISO();
+    if($("#depQty")) $("#depQty").addEventListener("input", depUpdateQuickMoney);
+    if($("#depType")) $("#depType").addEventListener("change", depUpdateQuickMoney);
+    depUpdateQuickMoney();
+  })();
+
+})();
+</script>
+</body>
+</html>
